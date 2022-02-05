@@ -1,7 +1,16 @@
 const crypto = require('crypto');
+const prompt = require('prompt');
+const {Client, Intents} = require('discord.js');
+const {token, keyvar, threadId, threadIdTest, version} = require('./config.json');
+const myIntents = new Intents(); myIntents.add(Intents.FLAGS.GUILD_MESSAGES,
+   Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILDS);
+const client = new Client({ intents: myIntents });
+const channel = client.channels.cache.get(thread);
+
 const algorithm = 'aes-256-cbc';
-const key = 'sudgpwaupuwp98whEF98WHE9Fhvquhfo'; //**
-const iv = 'jdtbflihbdmygnkd'; //**
+var key = keyvar; //**
+const iv = crypto.randomBytes(16); //**
+var thread;
 
 function encrypt(text) {
   let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
@@ -10,26 +19,14 @@ function encrypt(text) {
   return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
-
 function decrypt(text) {
-  let iv = Buffer.from(text.iv, 'hex');
+  let iv = Buffer.from(text.iv, 'hex');;
   let encryptedText = Buffer.from(text.encryptedData, 'hex');
   let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
 }
-
-const prompt = require('prompt');
-const {Client, Intents} = require('discord.js');
-const {token, threadId, threadIdTest, version} = require('./config.json');
-const myIntents = new Intents(); myIntents.add(Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILDS);
-const client = new Client({ intents: myIntents });
-const channel = client.channels.cache.get(thread);
-
-
-var thread;
-var iD;
 
 if (process.argv[2] == '-g'){
   thread = threadId;
@@ -48,8 +45,6 @@ client.once('ready', message =>{
   console.log('Running');
   var recursiveReadline = function () {
   const channel = client.channels.cache.get(thread);
-
-
     prompt.start();
     prompt.get(['msg'], (err, result) =>{
       if (err) {
@@ -60,15 +55,12 @@ client.once('ready', message =>{
           return process.exit();
         }
         else if (result.msg.charAt(0) === '*' && result.msg.charAt(1) === '*') {
-          var message = '**' + JSON.stringify(encrypt(result.msg));
-
-          console.log(JSON.stringify(encrypt(result.msg)));
-          channel.send(message);
+          channel.send('**' + (encrypt(result.msg).iv) + (encrypt(result.msg).encryptedData));
         }
         else {
         channel.send(result.msg);
+      }
         recursiveReadline();
-        }
       }
     });
   };
@@ -79,10 +71,12 @@ client.once('ready', message =>{
 
 client.on('messageCreate', messageCreate => {
   const channel = client.channels.cache.get(thread);
-  console.log(messageCreate.content);
 if (messageCreate.content.charAt(0) === '*' && messageCreate.content.charAt(1) === '*' ){
-  console.log(decrypt(messageCreate.content.));
-  //console.log(decrypt())
+  console.log((decrypt({ iv: messageCreate.content.slice(2, 34),
+     encryptedData: messageCreate.content.slice(34, ) })).slice(2));
+}
+else {
+  console.log(messageCreate.content)
 }
 
 });
