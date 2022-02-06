@@ -95,5 +95,9 @@ client.on('messageCreate', messageCreate => {
      }
 
 });
-
+client.on("messageCreate", (message) =>{
+if (message.content.startsWith("anime")){
+  message.channel.send("NO ANIME");
+}
+});
 client.login(token);
