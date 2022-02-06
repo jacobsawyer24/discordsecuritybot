@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const prompt = require('prompt');
 const {Client, Intents} = require('discord.js');
-const {token, threadId, threadIdTest, version} = require('./config.json');
+const {token, clientId, threadId, threadIdTest, version} = require('./config.json');
 const {keyvar} = require('./key.json')
 const myIntents = new Intents(); myIntents.add(Intents.FLAGS.GUILD_MESSAGES,
    Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILDS);
@@ -54,6 +54,7 @@ client.once('ready', message =>{
       if (err) {
         throw err;
       }
+
       else {
         if (result.msg === 'exit'){
           return process.exit();
@@ -62,12 +63,17 @@ client.once('ready', message =>{
           channel.send('**' + (encrypt(result.msg).iv) + (encrypt(result.msg).encryptedData));
         }
         else {
-        channel.send(result.msg);
-      }
+          if (result.msg != ''){
+            channel.send(result.msg);
+          }
+
+        }
         recursiveReadline();
       }
     });
-  };
+
+
+  }
 
   recursiveReadline();
 
@@ -76,11 +82,19 @@ client.once('ready', message =>{
 client.on('messageCreate', messageCreate => {
   const channel = client.channels.cache.get(thread);
 if (messageCreate.content.charAt(0) === '*' && messageCreate.content.charAt(1) === '*' ){
+  try{
   console.log((decrypt({ iv: messageCreate.content.slice(2, 34),
      encryptedData: messageCreate.content.slice(34, ) })).slice(2));
+   }
+     catch {
+       console.log('unable to decrypt');
+     }
+
 }
 else {
-  console.log(messageCreate.content)
+  if (messageCreate.author.id != clientId) {
+  console.log(messageCreate.content);
+  }
 }
 
 });
