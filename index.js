@@ -65,7 +65,7 @@ client.once('ready', message =>{
           return process.exit();
         }
         else if (process.argv[2] == '-e') {
-          channel.send('**' + (encrypt(result.msg).iv) + (encrypt(result.msg).encryptedData));
+          channel.send((encrypt(result.msg).iv) + (encrypt(result.msg).encryptedData));
         }
         else {
           if (result.msg != ''){
