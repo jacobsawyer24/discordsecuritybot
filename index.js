@@ -32,11 +32,16 @@ function decrypt(text) {
   return decrypted.toString();
 }
 
-if (process.argv[2] == '-g'){
+if (process.argv[2] === '-e'){
+  thread = threadId;
+  console.log('secure mode');
+}
+
+if (process.argv[2] === '-g'){
   thread = threadId;
   console.log('general');
 }
-else if (process.argv[2] == '-v') {
+else if (process.argv[2] === '-v') {
   console.log(version);
   process.exit();
 }
@@ -59,7 +64,7 @@ client.once('ready', message =>{
         if (result.msg === 'exit'){
           return process.exit();
         }
-        else if (result.msg.charAt(0) === '*' && result.msg.charAt(1) === '*') {
+        else if (process.argv[2] == '-e') {
           channel.send('**' + (encrypt(result.msg).iv) + (encrypt(result.msg).encryptedData));
         }
         else {
@@ -81,21 +86,13 @@ client.once('ready', message =>{
 
 client.on('messageCreate', messageCreate => {
   const channel = client.channels.cache.get(thread);
-if (messageCreate.content.charAt(0) === '*' && messageCreate.content.charAt(1) === '*' ){
   try{
   console.log((decrypt({ iv: messageCreate.content.slice(2, 34),
      encryptedData: messageCreate.content.slice(34, ) })).slice(2));
    }
      catch {
-       console.log('unable to decrypt');
+       console.log(messageCreate.content);
      }
-
-}
-else {
-  if (messageCreate.author.id != clientId) {
-  console.log(messageCreate.content);
-  }
-}
 
 });
 
