@@ -87,8 +87,8 @@ client.once('ready', message =>{
 client.on('messageCreate', messageCreate => {
   const channel = client.channels.cache.get(thread);
   try{
-  console.log((decrypt({ iv: messageCreate.content.slice(2, 34),
-     encryptedData: messageCreate.content.slice(34, ) })).slice(2));
+  console.log((decrypt({ iv: messageCreate.content.slice(0, 32),
+     encryptedData: messageCreate.content.slice(32, ) })));
    }
      catch {
        console.log(messageCreate.content);
