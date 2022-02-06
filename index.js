@@ -1,22 +1,26 @@
 const crypto = require('crypto');
 const prompt = require('prompt');
 const {Client, Intents} = require('discord.js');
-const {token, keyvar, threadId, threadIdTest, version} = require('./config.json');
+const {token, threadId, threadIdTest, version} = require('./config.json');
+const {keyvar} = require('./key.json')
 const myIntents = new Intents(); myIntents.add(Intents.FLAGS.GUILD_MESSAGES,
    Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILDS);
 const client = new Client({ intents: myIntents });
 const channel = client.channels.cache.get(thread);
-
 const algorithm = 'aes-256-cbc';
-var key = keyvar; //**
-const iv = crypto.randomBytes(16); //**
+var iv = crypto.randomBytes(16);
+var key = keyvar;
+
 var thread;
 
 function encrypt(text) {
+
   let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
+  iv = crypto.randomBytes(16);
   return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+
 }
 
 function decrypt(text) {
