@@ -85,7 +85,7 @@ client.once('ready', message =>{
 });
 
 client.on('messageCreate', messageCreate => {
-  const channel = client.channels.cache.get(thread);
+  if (messageCreate.author.id != clientId)
   try{
   console.log((decrypt({ iv: messageCreate.content.slice(0, 32),
      encryptedData: messageCreate.content.slice(32, ) })));
@@ -93,16 +93,6 @@ client.on('messageCreate', messageCreate => {
      catch {
        console.log(messageCreate.content);
      }
-
-});
-
-client.on('interactionCreate', async interaction => {
-
-  const {ping} = interaction;
-
-  if('ping' === 'ping'){
-    await interaction.reply('No!');
-  }
 
 });
 
