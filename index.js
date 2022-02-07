@@ -96,8 +96,10 @@ client.on('messageCreate', messageCreate => {
 
 });
 client.on("messageCreate", (message) =>{
-if (message.content.startsWith("anime")){
-  message.channel.send("NO ANIME");
+  
+  var options = ["NO ANIME", "shut up","do you wanna get banned?","https://cdn.discordapp.com/attachments/933099827661795411/938873256562270228/IMG_3162.PNG"];
+  if (message.content.startsWith("anime")){
+    var response = options[Math.floor(Math.random()*options.length)];
+    message.channel.send(response).then().catch(console.error);
 }
-});
 client.login(token);
