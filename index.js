@@ -143,11 +143,14 @@ client.on('messageCreate', messageCreate => {
 
 client.on("messageCreate", (message) =>{
   
-  var options = ["NO ANIME", "shut up","do you wanna get banned?","https://cdn.discordapp.com/attachments/933099827661795411/938873256562270228/IMG_3162.PNG"];
-  if (message.content.toLowerCase().startsWith("anime")){
+  var options = ["That word isnt allowed", "You said a banned word", "Don't say that", "Hush"];
+  if (message.content.toLowerCase().includes("anime")){
+    message.delete();
     var response = options[Math.floor(Math.random()*options.length)];
-    message.channel.send(response).then().catch(console.error);
-}
+    message.channel.send(response).then().catch(console.error).then(message => {setTimeout(() => message.delete(), 3000)});
+    
+
+  }
 
 });
 client.login(token);
